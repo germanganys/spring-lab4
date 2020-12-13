@@ -126,6 +126,8 @@
                 this.error = ''
             },
             onRChanged: function () {
+                var addBtn = document.getElementById('add')
+
                 if (isNaN(this.r) || parseInt(this.r) <= 0 || parseInt(this.r) >= 5 || this.r.length > 4) {
                     this.error = 'R must be number between (0, 5) with 2 digits after comma'
                     addBtn.disabled = true;
