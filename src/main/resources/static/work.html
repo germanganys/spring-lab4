@@ -186,7 +186,12 @@
                 }).then(response => {
                     this.message = response.data.status;
                     if (this.message === 'ok') {
-                        this.points.push(response.data.last_point)
+                        const point = response.data.last_point
+                        this.points.push(point)
+
+                        const y = 150 - 130 * point.y / point.r;
+                        const x = point.x * 130 / point.r + 150;
+                        drawPoint('canvas', x, y, point.result)
                         this.error = '';
                     } else {
                         this.error = 'Failed to add point'
@@ -335,7 +340,6 @@
         }
         context.fill();
         context.stroke();
-
     }
 </script>
 
