@@ -4,7 +4,7 @@ import com.example.lab4.models.Point;
 
 import java.util.List;
 
-public class MyResponse {
+public class JSONResponse {
     public static String statusOk = "ok";
     public static String statusFail = "failed";
 
@@ -13,7 +13,7 @@ public class MyResponse {
     public List<Point> data;
     public Point last_point;
 
-    public MyResponse() {
+    public JSONResponse() {
     }
 }
 

@@ -5,7 +5,7 @@ import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Session {
+public class KeyVault {
     private static final Set<String> sessionKeys = new HashSet<String>();
 
     public static Boolean isValidUser(String secKey) {

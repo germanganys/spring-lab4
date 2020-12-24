@@ -1,6 +1,6 @@
 package com.example.lab4.rest;
 
-import com.example.lab4.db.UserRepositoryJPA;
+import com.example.lab4.jpa.UserRepositoryJPA;
 import com.example.lab4.models.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -13,9 +13,9 @@ import java.security.MessageDigest;
 import java.util.Base64;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:9824")
+@CrossOrigin(origins = "http://lab4-aaa.herokuapp.com/")
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/lk")
 public class UserRest {
 
     @Autowired
@@ -24,8 +24,8 @@ public class UserRest {
     @PostMapping("/login")
     public String login(@RequestBody String json) {
         Gson gson = new Gson();
-        MyResponse resp = new MyResponse();
-        resp.status = MyResponse.statusOk;
+        JSONResponse resp = new JSONResponse();
+        resp.status = JSONResponse.statusOk;
         try {
             JsonElement root = new JsonParser().parse(json);
             String username = root.getAsJsonObject().get("username").getAsString();
@@ -41,23 +41,23 @@ public class UserRest {
             for (User user : users) {
                 if (username.equals(user.getUsername()) &&
                         encodedPass.equals(user.getPasswordHash())) {
-                    resp.key = Session.getNewKey();
-                    return gson.toJson(resp, MyResponse.class);
+                    resp.key = KeyVault.getNewKey();
+                    return gson.toJson(resp, JSONResponse.class);
                 }
             }
             throw new Exception("Invalid username or pass");
 
         } catch (Exception e) {
-            resp.status = MyResponse.statusFail;
-            return gson.toJson(resp, MyResponse.class);
+            resp.status = JSONResponse.statusFail;
+            return gson.toJson(resp, JSONResponse.class);
         }
     }
 
     @PostMapping("/register")
     public String register(@RequestBody String json) {
         Gson gson = new Gson();
-        MyResponse resp = new MyResponse();
-        resp.status = MyResponse.statusOk;
+        JSONResponse resp = new JSONResponse();
+        resp.status = JSONResponse.statusOk;
         try {
             JsonElement root = new JsonParser().parse(json);
             String username = root.getAsJsonObject().get("username").getAsString();
@@ -72,26 +72,26 @@ public class UserRest {
                 user.setPasswordHash(encodedPass);
 
                 this.dbUsers.save(user);
-                resp.key = Session.getNewKey();
-                return gson.toJson(resp, MyResponse.class);
+                resp.key = KeyVault.getNewKey();
+                return gson.toJson(resp, JSONResponse.class);
             } else
                 throw new Exception("Already registered");
 
         } catch (Exception e) {
-            resp.status = MyResponse.statusFail;
-            return gson.toJson(resp, MyResponse.class);
+            resp.status = JSONResponse.statusFail;
+            return gson.toJson(resp, JSONResponse.class);
         }
     }
 
     @PostMapping("/logout")
     public String logout(@RequestBody String json) {
         Gson gson = new Gson();
-        MyResponse resp = new MyResponse();
-        resp.status = MyResponse.statusOk;
+        JSONResponse resp = new JSONResponse();
+        resp.status = JSONResponse.statusOk;
         JsonElement root = new JsonParser().parse(json);
         String key = root.getAsJsonObject().get("key").getAsString();
-        Session.deleteKey(key);
-        return gson.toJson(resp, MyResponse.class);
+        KeyVault.deleteKey(key);
+        return gson.toJson(resp, JSONResponse.class);
     }
 
     private Boolean alreadyRegistered(String username) {

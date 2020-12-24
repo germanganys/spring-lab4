@@ -1,6 +1,6 @@
 package com.example.lab4.rest;
 
-import com.example.lab4.db.PointRepositoryJPA;
+import com.example.lab4.jpa.PointRepositoryJPA;
 import com.example.lab4.models.Point;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -8,7 +8,7 @@ import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:9824")
+@CrossOrigin(origins = "http://lab4-aaa.herokuapp.com")
 @RestController
 @RequestMapping("/api")
 public class PointRest {
@@ -19,13 +19,13 @@ public class PointRest {
     @PostMapping("/add")
     public String add(@RequestBody String json) {
         Gson gson = new Gson();
-        MyResponse resp = new MyResponse();
+        JSONResponse resp = new JSONResponse();
         resp.status = "failed";
 
         JsonElement root = new JsonParser().parse(json);
         String key = root.getAsJsonObject().get("key").getAsString();
 
-        if (Session.isValidUser(key)) {
+        if (KeyVault.isValidUser(key)) {
             try {
                 String x = root.getAsJsonObject().get("x").getAsString();
                 String y = root.getAsJsonObject().get("y").getAsString();
@@ -42,47 +42,47 @@ public class PointRest {
                 point.setResult(Point.calculate(Double.parseDouble(x), Double.parseDouble(y), Double.parseDouble(r)));
                 this.dbPoints.save(point);
                 resp.last_point = point;
-                resp.status = "ok";
+                resp.status = JSONResponse.statusOk;
             } catch (Exception e) {
-                resp.status = "failed";
+                resp.status = JSONResponse.statusFail;
             }
         } else {
-            resp.status = "failed";
+            resp.status = JSONResponse.statusFail;
         }
-        return gson.toJson(resp, MyResponse.class);
+        return gson.toJson(resp, JSONResponse.class);
     }
 
     @PostMapping("/get")
     public String results(@RequestBody String json) {
         Gson gson = new Gson();
-        MyResponse resp = new MyResponse();
-        resp.status = "failed";
+        JSONResponse resp = new JSONResponse();
+        resp.status = JSONResponse.statusFail;
 
         JsonElement root = new JsonParser().parse(json);
         String key = root.getAsJsonObject().get("key").getAsString();
 
-        if (Session.isValidUser(key)) {
+        if (KeyVault.isValidUser(key)) {
             resp.data = this.dbPoints.findAll();
-            resp.status = "ok";
-            return gson.toJson(resp, MyResponse.class);
+            resp.status = JSONResponse.statusOk;
+            return gson.toJson(resp, JSONResponse.class);
         }
-        return gson.toJson(resp, MyResponse.class);
+        return gson.toJson(resp, JSONResponse.class);
     }
 
     @PostMapping("/clear")
     public String clear(@RequestBody String json) {
         Gson gson = new Gson();
-        MyResponse resp = new MyResponse();
-        resp.status = "failed";
+        JSONResponse resp = new JSONResponse();
+        resp.status = JSONResponse.statusFail;
 
         JsonElement root = new JsonParser().parse(json);
         String key = root.getAsJsonObject().get("key").getAsString();
 
-        if (Session.isValidUser(key)) {
+        if (KeyVault.isValidUser(key)) {
             this.dbPoints.deleteAll();
-            resp.status = "ok";
-            return gson.toJson(resp, MyResponse.class);
+            resp.status = JSONResponse.statusOk;
+            return gson.toJson(resp, JSONResponse.class);
         }
-        return gson.toJson(resp, MyResponse.class);
+        return gson.toJson(resp, JSONResponse.class);
     }
 }
