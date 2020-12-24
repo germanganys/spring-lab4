@@ -13,7 +13,7 @@ import java.security.MessageDigest;
 import java.util.Base64;
 import java.util.List;
 
-@CrossOrigin(origins = "http://lab4-aaa.herokuapp.com/")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/lk")
 public class UserRest {
