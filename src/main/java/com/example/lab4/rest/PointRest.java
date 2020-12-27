@@ -20,7 +20,6 @@ public class PointRest {
     public String add(@RequestBody String json) {
         Gson gson = new Gson();
         JSONResponse resp = new JSONResponse();
-        resp.status = "failed";
 
         JsonElement root = new JsonParser().parse(json);
         String key = root.getAsJsonObject().get("key").getAsString();
@@ -44,9 +43,11 @@ public class PointRest {
                 resp.last_point = point;
                 resp.status = JSONResponse.statusOk;
             } catch (Exception e) {
+                resp.details = e.getMessage();
                 resp.status = JSONResponse.statusFail;
             }
         } else {
+            resp.details = "Invalid key";
             resp.status = JSONResponse.statusFail;
         }
         return gson.toJson(resp, JSONResponse.class);
@@ -56,7 +57,6 @@ public class PointRest {
     public String results(@RequestBody String json) {
         Gson gson = new Gson();
         JSONResponse resp = new JSONResponse();
-        resp.status = JSONResponse.statusFail;
 
         JsonElement root = new JsonParser().parse(json);
         String key = root.getAsJsonObject().get("key").getAsString();
@@ -65,6 +65,9 @@ public class PointRest {
             resp.data = this.dbPoints.findAll();
             resp.status = JSONResponse.statusOk;
             return gson.toJson(resp, JSONResponse.class);
+        } else {
+            resp.status = JSONResponse.statusFail;
+            resp.details = "Invalid key";
         }
         return gson.toJson(resp, JSONResponse.class);
     }

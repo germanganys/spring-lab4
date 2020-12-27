@@ -9,6 +9,8 @@ public class JSONResponse {
     public static String statusFail = "failed";
 
     public String status;
+    public String details;
+
     public String key;
     public List<Point> data;
     public Point last_point;

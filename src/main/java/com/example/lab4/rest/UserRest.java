@@ -48,6 +48,7 @@ public class UserRest {
             throw new Exception("Invalid username or pass");
 
         } catch (Exception e) {
+            resp.details = e.getMessage();
             resp.status = JSONResponse.statusFail;
             return gson.toJson(resp, JSONResponse.class);
         }
@@ -78,6 +79,7 @@ public class UserRest {
                 throw new Exception("Already registered");
 
         } catch (Exception e) {
+            resp.details = e.getMessage();
             resp.status = JSONResponse.statusFail;
             return gson.toJson(resp, JSONResponse.class);
         }
