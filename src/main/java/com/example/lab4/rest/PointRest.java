@@ -1,7 +1,9 @@
 package com.example.lab4.rest;
 
 import com.example.lab4.jpa.PointRepositoryJPA;
+import com.example.lab4.models.JSONResponse;
 import com.example.lab4.models.Point;
+import com.example.lab4.services.KeyVault;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -16,6 +18,9 @@ public class PointRest {
     @Autowired
     PointRepositoryJPA dbPoints;
 
+    @Autowired
+    KeyVault keyVault;
+
     @PostMapping("/add")
     public String add(@RequestBody String json) {
         Gson gson = new Gson();
@@ -24,7 +29,7 @@ public class PointRest {
         JsonElement root = new JsonParser().parse(json);
         String key = root.getAsJsonObject().get("key").getAsString();
 
-        if (KeyVault.isValidUser(key)) {
+        if (keyVault.isValidUser(key)) {
             try {
                 String x = root.getAsJsonObject().get("x").getAsString();
                 String y = root.getAsJsonObject().get("y").getAsString();
@@ -61,7 +66,7 @@ public class PointRest {
         JsonElement root = new JsonParser().parse(json);
         String key = root.getAsJsonObject().get("key").getAsString();
 
-        if (KeyVault.isValidUser(key)) {
+        if (keyVault.isValidUser(key)) {
             resp.data = this.dbPoints.findAll();
             resp.status = JSONResponse.statusOk;
             return gson.toJson(resp, JSONResponse.class);
@@ -81,7 +86,7 @@ public class PointRest {
         JsonElement root = new JsonParser().parse(json);
         String key = root.getAsJsonObject().get("key").getAsString();
 
-        if (KeyVault.isValidUser(key)) {
+        if (keyVault.isValidUser(key)) {
             this.dbPoints.deleteAll();
             resp.status = JSONResponse.statusOk;
             return gson.toJson(resp, JSONResponse.class);

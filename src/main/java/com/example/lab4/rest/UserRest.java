@@ -1,7 +1,9 @@
 package com.example.lab4.rest;
 
 import com.example.lab4.jpa.UserRepositoryJPA;
+import com.example.lab4.models.JSONResponse;
 import com.example.lab4.models.User;
+import com.example.lab4.services.KeyVault;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -20,6 +22,9 @@ public class UserRest {
 
     @Autowired
     UserRepositoryJPA dbUsers;
+
+    @Autowired
+    KeyVault keyVault;
 
     @PostMapping("/login")
     public String login(@RequestBody String json) {
@@ -41,7 +46,7 @@ public class UserRest {
             for (User user : users) {
                 if (username.equals(user.getUsername()) &&
                         encodedPass.equals(user.getPasswordHash())) {
-                    resp.key = KeyVault.getNewKey();
+                    resp.key = keyVault.newKey();
                     return gson.toJson(resp, JSONResponse.class);
                 }
             }
@@ -73,7 +78,7 @@ public class UserRest {
                 user.setPasswordHash(encodedPass);
 
                 this.dbUsers.save(user);
-                resp.key = KeyVault.getNewKey();
+                resp.key = keyVault.newKey();
                 return gson.toJson(resp, JSONResponse.class);
             } else
                 throw new Exception("Already registered");
@@ -92,7 +97,7 @@ public class UserRest {
         resp.status = JSONResponse.statusOk;
         JsonElement root = new JsonParser().parse(json);
         String key = root.getAsJsonObject().get("key").getAsString();
-        KeyVault.deleteKey(key);
+        keyVault.removeKey(key);
         return gson.toJson(resp, JSONResponse.class);
     }
 
