@@ -27,7 +27,7 @@ public class PointRest {
         JSONResponse resp = new JSONResponse();
 
         JsonElement root = new JsonParser().parse(json);
-        String key = root.getAsJsonObject().get("key").getAsString();
+        String key = root.getAsJsonObject().get("token").getAsString();
 
         if (keyVault.isValidUser(key)) {
             try {
@@ -35,7 +35,7 @@ public class PointRest {
                 String y = root.getAsJsonObject().get("y").getAsString();
                 String r = root.getAsJsonObject().get("r").getAsString();
 
-                if (r.length() > 4 || Double.parseDouble(r) <= 0 || Double.parseDouble(r) > 4.99)
+                if (r.length() > 4 || Double.parseDouble(r) <= 0 || Double.parseDouble(r) > 5)
                     throw new Exception("Invalid r");
 
 
@@ -64,7 +64,7 @@ public class PointRest {
         JSONResponse resp = new JSONResponse();
 
         JsonElement root = new JsonParser().parse(json);
-        String key = root.getAsJsonObject().get("key").getAsString();
+        String key = root.getAsJsonObject().get("token").getAsString();
 
         if (keyVault.isValidUser(key)) {
             resp.data = this.dbPoints.findAll();
@@ -84,7 +84,7 @@ public class PointRest {
         resp.status = JSONResponse.statusFail;
 
         JsonElement root = new JsonParser().parse(json);
-        String key = root.getAsJsonObject().get("key").getAsString();
+        String key = root.getAsJsonObject().get("token").getAsString();
 
         if (keyVault.isValidUser(key)) {
             this.dbPoints.deleteAll();

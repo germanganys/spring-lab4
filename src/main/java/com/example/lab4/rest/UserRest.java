@@ -46,7 +46,7 @@ public class UserRest {
             for (User user : users) {
                 if (username.equals(user.getUsername()) &&
                         encodedPass.equals(user.getPasswordHash())) {
-                    resp.key = keyVault.newKey();
+                    resp.token = keyVault.newKey();
                     return gson.toJson(resp, JSONResponse.class);
                 }
             }
@@ -78,7 +78,7 @@ public class UserRest {
                 user.setPasswordHash(encodedPass);
 
                 this.dbUsers.save(user);
-                resp.key = keyVault.newKey();
+                resp.token = keyVault.newKey();
                 return gson.toJson(resp, JSONResponse.class);
             } else
                 throw new Exception("Already registered");

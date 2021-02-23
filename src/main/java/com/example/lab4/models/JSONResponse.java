@@ -11,7 +11,7 @@ public class JSONResponse {
     public String status;
     public String details;
 
-    public String key;
+    public String token;
     public List<Point> data;
     public Point last_point;
 
